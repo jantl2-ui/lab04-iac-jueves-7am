@@ -1,0 +1,12 @@
+{
+    "name": "upload-lambda",
+    "version": "1.0.0",
+    "description": "Lambda for uploading images to S3",
+    "main": "index.js",
+    "type": "module",
+    "dependencies": {
+        "@aws-sdk/client-s3": "^3.0.0",
+        "busboy": "^1.6.0",
+        "uuid": "^9.0.0"
+    }
+}
