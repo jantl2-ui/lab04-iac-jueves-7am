@@ -6,11 +6,15 @@ Para crop-lambda: Dado que utilizamos la librería sharp (que depende de binario
 Abre tu terminal en la raíz del proyecto y ejecuta:
 
 Para upload-lambda:
+```bash
 npm install
+```
 
 Para crop-lambda:
 
+```bash
 npm install --cpu=x64 --os=linux libc=glibc sharp
+```
 
 Paso 2: Despliegue
 
@@ -82,7 +86,7 @@ finalmente para borrar todo lo creado ejecutamos los siguientes comandos:
 terraform destroy
 ```
 
-## 📋 Requisitos
+##  Requisitos
 
 - Terraform >= 1.5.0
 - AWS Provider ~> 5.0
