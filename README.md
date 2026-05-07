@@ -18,8 +18,8 @@ Paso 2: Despliegue
 Empezamos con el entorno "dev"
 
 Primero ejecutamos lo siguiente para inicializar terraform:
+
 ```bash   
-cd environments/dev
 terraform init
 ```
 Segundo creamos el workspace para el ambiente dev:
