@@ -1,70 +1,86 @@
-# 🖼️ Image Processor — Serverless IaC (Terraform + AWS)
+Paso 1: Preparación del Código Fuente (Lambdas)
+Antes de ejecutar cualquier comando de Terraform, es obligatorio instalar las dependencias de Node.js.
 
-Infraestructura como código para un procesador de imágenes serverless en AWS, desplegado con Terraform.
+Para crop-lambda: Dado que utilizamos la librería sharp (que depende de binarios en C++), debemos realizar una compilación cruzada para que funcione correctamente en el entorno de AWS Lambda (Amazon Linux x64), ignorando el sistema operativo de tu máquina local.
 
-## 🏗️ Arquitectura
+Abre tu terminal en la raíz del proyecto y ejecuta:
 
-```
-Client → API Gateway HTTP v2 → Upload Lambda → S3 (uploads/)
-                                                   ↓
-                                              S3 Notification
-                                                   ↓
-                                              SQS Queue → Crop Lambda → S3 (processed/)
-                                                   ↓ (fallos)
-                                              DLQ → CloudWatch Alarm → SNS
-```
+Para upload-lambda:
+npm install
 
-## 🖼️ Imágenes de Ejemplo
+Para crop-lambda:
 
-Se ha incluido una imagen de ejemplo en la carpeta `assets/` para probar el flujo de procesamiento:
+npm install --cpu=x64 --os=linux libc=glibc sharp
 
-![The Starry Night](assets/starry_night.png)
-
-*Nota: Esta imagen puede ser utilizada para probar la subida vía API Gateway y el posterior recorte circular por la Lambda de Crop.*
-
-## 📁 Estructura del Proyecto
+Paso 2: Despliegue
 
 ```
-├── environments/
-│   ├── dev/          # Entorno de desarrollo
-│   ├── qa/           # Entorno de QA/testing
-│   └── prod/         # Entorno de producción
-├── modules/
-│   ├── api_gateway/  # API Gateway HTTP v2
-│   ├── compute/      # Lambda Functions (upload + crop)
-│   ├── messaging/    # SQS Queues + S3 Notifications
-│   ├── networking/   # VPC, Subnets, VPC Endpoints
-│   ├── observability/# CloudWatch Logs, Alarms, SNS
-│   ├── security/     # IAM Roles, Policies, Security Groups
-│   └── storage/      # S3 Bucket con encryption + lifecycle
-└── src/
-    ├── crop-lambda/  # Node.js 20.x — Procesamiento de imágenes (sharp)
-    └── upload-lambda/# Node.js 20.x — Upload multipart a S3
-```
+Empezamos con el entorno "dev"
 
-## 🚀 Despliegue
-
-```bash
-# 1. Ir al entorno deseado
+Primero ejecutamos lo siguiente para inicializar terraform:
+```bash   
 cd environments/dev
-
-# 2. Inicializar Terraform
 terraform init
-
-# 3. Revisar el plan
+```
+Segundo creamos el workspace para el ambiente dev:
+```bash   
+terraform workspace new dev
+```
+Tercero listamos los workspaces para verificar que se creó el workspace de dev:
+```bash   
+terraform workspace list
+```
+Cuarto usamos el workspace de dev:
+```bash   
+terraform workspace select dev
+```
+Quinto validamos y vemos lo que se va a crear:
+```bash   
+terraform validate
+```
+```bash   
 terraform plan
+```
 
-# 4. Aplicar
+Sexto aplicamos el plan de terraform:
+```bash   
 terraform apply
 ```
 
-## 🔧 Configuración por Entorno
 
-| Variable | Dev | QA | Prod |
-|----------|-----|-----|------|
-| `lambda_memory_crop` | 256 MB | 512 MB | 1024 MB |
-| `log_retention_days` | 3 días | 7 días | 14 días |
-| CORS origins | `*` | `*` | Configurable |
+si queremos pasar a otro entorno lo hacemos de la siguiente manera, pero tenemos primero crearlo, en caso no lo hayamos creado, como vismos antes (terraform workspace new qa): 
+
+```bash   
+terraform workspace select qa
+```
+
+Y hacemos lo mismo que hicimos con el anterior entorno, solo que esta vez con el entorno qa:
+
+```bash
+terraform workspace select qa
+terraform validate
+terraform plan
+terraform apply
+```
+
+tras haber creado el entorno qa, pasamos al entorno prod:
+
+```bash   
+terraform workspace select prod
+```
+
+Y hacemos lo mismo que hicimos con el anterior entorno, solo que esta vez con el entorno prod:
+
+```bash
+terraform validate
+terraform plan
+terraform apply
+```
+
+finalmente para borrar todo lo creado ejecutamos los siguientes comandos:
+```bash   
+terraform destroy
+```
 
 ## 📋 Requisitos
 
