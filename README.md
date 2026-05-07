@@ -14,7 +14,7 @@ npm install --cpu=x64 --os=linux libc=glibc sharp
 
 Paso 2: Despliegue
 
-```
+
 Empezamos con el entorno "dev"
 
 Primero ejecutamos lo siguiente para inicializar terraform:
