@@ -9,6 +9,11 @@ variable "project_name" {
 }
 
 variable "s3_bucket_id" {
-  description = "ID del bucket S3 que enviará las notificaciones a la cola"
+  description = "ID (nombre) del bucket S3 que enviará las notificaciones a la cola"
+  type        = string
+}
+
+variable "s3_bucket_arn" {
+  description = "ARN del bucket S3 para la condición de la política de la cola SQS"
   type        = string
 }
